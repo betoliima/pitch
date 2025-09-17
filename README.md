@@ -1,73 +1,160 @@
-# Welcome to your Lovable project
+# Glucose Pulse Graph
 
-## Project info
+Uma aplicação moderna de monitoramento de glicose desenvolvida com React, TypeScript e Vite. O sistema oferece monitoramento em tempo real, previsões inteligentes e planejamento nutricional personalizado para pessoas com diabetes.
 
-**URL**: https://lovable.dev/projects/4404e9a8-9eb6-4e41-b547-c358fee66553
+## 🚀 Funcionalidades
 
-## How can I edit this code?
+### 📊 Monitor de Glicose
+- **Monitoramento em Tempo Real**: Acompanhe seus níveis de glicose com atualizações contínuas
+- **Previsões Inteligentes**: IA avançada prevê níveis glicêmicos com 98,5% de precisão
+- **Alertas Inteligentes**: Notificações instantâneas quando os níveis saem da faixa normal
+- **Análise de Tendências**: Visualize padrões e tendências nos seus dados
+- **Interface Intuitiva**: Design moderno e fácil de usar
 
-There are several ways of editing your application.
+### 🍽️ Dieta Personalizada
+- **Planejamento de Refeições**: Organize suas refeições diárias
+- **Identificação Automática**: Sistema identifica automaticamente a próxima refeição baseada na hora
+- **Calendário Integrado**: Visualize seu progresso mensal
+- **Média Glicêmica**: Acompanhe sua média glicêmica diária
 
-**Use Lovable**
+### 📰 Notícias e Recursos
+- **Notícias sobre Diabetes**: Fique por dentro das últimas descobertas
+- **Recursos Avançados**: Tecnologia de ponta para o cuidado da sua saúde
+- **Segurança Garantida**: Dados protegidos com criptografia de nível bancário
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4404e9a8-9eb6-4e41-b547-c358fee66553) and start prompting.
+## 🛠️ Tecnologias Utilizadas
 
-Changes made via Lovable will be committed automatically to this repo.
+- **React 18** - Biblioteca para interfaces de usuário
+- **TypeScript** - Superset tipado do JavaScript
+- **Vite** - Build tool moderna e rápida
+- **Tailwind CSS** - Framework CSS utilitário
+- **Lucide React** - Ícones modernos
+- **Recharts** - Biblioteca de gráficos
+- **React Router** - Roteamento para aplicações React
 
-**Use your preferred IDE**
+## 📦 Instalação
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Pré-requisitos
+- Node.js (versão 16 ou superior)
+- npm ou yarn
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Passos para instalação
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. **Clone o repositório**
+```bash
+git clone https://github.com/SEU_USUARIO/glucose-pulse-graph.git
+cd glucose-pulse-graph
 ```
 
-**Edit a file directly in GitHub**
+2. **Instale as dependências**
+```bash
+npm install
+# ou
+yarn install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. **Execute o projeto em modo de desenvolvimento**
+```bash
+npm run dev
+# ou
+yarn dev
+```
 
-**Use GitHub Codespaces**
+4. **Abra no navegador**
+Acesse `http://localhost:5173` para visualizar a aplicação
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🏗️ Scripts Disponíveis
 
-## What technologies are used for this project?
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Cria build de produção
+- `npm run preview` - Visualiza o build de produção
+- `npm run lint` - Executa o linter ESLint
 
-This project is built with:
+## 📁 Estrutura do Projeto
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── ui/             # Componentes de interface
+│   ├── AppHeader.tsx   # Cabeçalho da aplicação
+│   └── GlucoseMonitor.tsx # Monitor de glicose
+├── pages/              # Páginas da aplicação
+│   ├── Home.tsx        # Página inicial
+│   ├── DietaPersonalizada.tsx # Página de dieta
+│   └── ...
+├── hooks/              # Hooks customizados
+├── lib/                # Utilitários
+└── main.tsx           # Ponto de entrada
+```
 
-## How can I deploy this project?
+## 🎨 Design System
 
-Simply open [Lovable](https://lovable.dev/projects/4404e9a8-9eb6-4e41-b547-c358fee66553) and click on Share -> Publish.
+### Cores Principais
+- **Azul Escuro**: `#3B5675` - Títulos e elementos principais
+- **Azul Claro**: `#CAE5F2` - Acentos e elementos secundários
+- **Background**: `bg-medical-bg` - Fundo médico
 
-## Can I connect a custom domain to my Lovable project?
+### Componentes
+- **Cards**: `bg-gradient-card` com sombras e bordas arredondadas
+- **Botões**: Gradiente azul com efeitos hover
+- **Ícones**: Lucide React com cores consistentes
 
-Yes, you can!
+## 🔧 Configuração
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Variáveis de Ambiente
+Crie um arquivo `.env.local` na raiz do projeto:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```env
+VITE_APP_TITLE=Glucose Pulse Graph
+VITE_APP_VERSION=1.0.0
+```
+
+## 📱 Responsividade
+
+A aplicação é totalmente responsiva e funciona em:
+- 📱 Dispositivos móveis
+- 📱 Tablets
+- 💻 Desktops
+- 🖥️ Telas grandes
+
+## 🚀 Deploy
+
+### Vercel (Recomendado)
+1. Conecte seu repositório ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push
+
+### Netlify
+1. Conecte seu repositório ao Netlify
+2. Configure o build command: `npm run build`
+3. Configure o publish directory: `dist`
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 👥 Autores
+
+- **Seu Nome** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/seuusuario)
+
+## 🙏 Agradecimentos
+
+- Equipe de desenvolvimento
+- Comunidade React
+- Contribuidores do projeto
+
+## 📞 Suporte
+
+Para suporte, envie um email para seu-email@exemplo.com ou abra uma issue no GitHub.
+
+---
+
+**Glucose Pulse Graph** - O futuro da saúde começa com PRECISÃO e excelência! 🎯

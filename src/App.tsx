@@ -10,7 +10,6 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import PlanSelection from "./pages/PlanSelection";
 import { AuthProvider, useAuth } from "@/hooks/auth-context";
-import AppHeader from "@/components/AppHeader";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +27,6 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
-          <AppHeader />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/plans" element={<PlanSelection />} />

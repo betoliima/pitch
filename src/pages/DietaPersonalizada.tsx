@@ -1,142 +1,316 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Calendar, Coffee, Utensils, Moon, Cookie } from "lucide-react";
 
 export default function DietaPersonalizada() {
-  const [dietaGerada, setDietaGerada] = useState(false);
+  const [consumedItems, setConsumedItems] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
-  const handleGerarDieta = () => {
-    setDietaGerada(true);
+  const toggleConsumed = (item: string) => {
+    const newConsumed = new Set(consumedItems);
+    if (newConsumed.has(item)) {
+      newConsumed.delete(item);
+    } else {
+      newConsumed.add(item);
+    }
+    setConsumedItems(newConsumed);
   };
 
-  const diasDaSemana = [
-    "SEGUNDA",
-    "TERÇA", 
-    "QUARTA",
-    "QUINTA",
-    "SEXTA",
-    "SÁBADO",
-    "DOMINGO"
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString('pt-BR', { month: 'long' });
+  const currentDay = currentDate.getDate();
+  const currentHour = currentDate.getHours();
+
+  // Dados das refeições
+  const refeicoes = [
+    {
+      id: 'cafe',
+      nome: 'Café da Manhã',
+      horario: '08:00',
+      icone: Coffee,
+      itens: [
+        'Aveia com frutas',
+        'Leite desnatado',
+        'Banana',
+        'Chia'
+      ]
+    },
+    {
+      id: 'almoco',
+      nome: 'Almoço',
+      horario: '12:00',
+      icone: Utensils,
+      itens: [
+        'Frango grelhado',
+        'Arroz integral',
+        'Salada verde',
+        'Brócolis'
+      ]
+    },
+    {
+      id: 'jantar',
+      nome: 'Jantar',
+      horario: '19:00',
+      icone: Moon,
+      itens: [
+        'Peixe assado',
+        'Batata doce',
+        'Vegetais refogados',
+        'Azeite de oliva'
+      ]
+    },
+    {
+      id: 'lanches',
+      nome: 'Lanches',
+      horario: '15:00',
+      icone: Cookie,
+      itens: [
+        'Iogurte natural',
+        'Nozes',
+        'Maçã',
+        'Chá verde'
+      ]
+    }
   ];
 
-  const dietaSemanal = {
-    SEGUNDA: [
-      "Café da manhã: kefir (300 ml), amaranto em flocos (15 g), abacate (70 g), banana verde cozida (60 g), chia (5 g)",
-      "Lanche da manhã: clara de ovo (120 g), granola sem açúcar e sementes (45 g), figo fresco (100 g)",
-      "Almoço: bacalhau dessalgado (120 g), batata-doce (240 g), abóbora cabotia (120 g), salada verde (150 g), cevada cozida (porção), azeite de oliva (1.25 c.s.)",
-      "Lanche da tarde: homus (75 g), pão de espelta integral (20 g), morango (200 g)",
-      "Jantar: peixe assado (120 g), batata-doce (210 g), abobrinha (120 g), abacate (70 g), espinafre (porção), milho verde (porção)"
-    ],
-    TERÇA: [
-      "Café da manhã: kefir (300 ml), aveia (22.5 g), banana verde cozida (80 g), morango (100 g), nozes (7.5 g)",
-      "Lanche da manhã: iogurte (150 g), pão integral 100% (60 g), ameixa fresca (100 g)",
-      "Almoço: frango grelhado (120 g), batata-doce (120 g), alcachofra (100 g), pepino (100 g), espaguete integral (80 g), coco em lascas (15 g)",
-      "Lanche da tarde: leite vegetal (400 ml), torrada integral (40 g), framboesa (160 g)",
-      "Jantar: camarão (120 g), batata-doce (120 g), alface (70 g), abacate (70 g), salada completa (200 g), arroz integral (80 g)"
-    ],
-    QUARTA: [
-      "Café da manhã: kefir (150 ml), centeio 100% (120 g), banana verde cozida (80 g), morango (100 g), chia (10 g)",
-      "Lanche da manhã: ovo (2 un), granola sem açúcar e sementes (90 g), amora (100 g)",
-      "Almoço: ovo cozido (2 un), arroz negro (140 g), alface roxa (70 g), alcachofra (100 g), arroz integral (120 g), mix de sementes (10 g)",
-      "Lanche da tarde: proteína em pó sem açúcar (25 g), pão de espelta integral (120 g), damasco fresco (100 g)",
-      "Jantar: lentilhas (80 g), arroz vermelho (92 g), almeirão (60 g), espinafre (porção), cevada cozida (porção), semente de girassol (15 g)"
-    ],
-    QUINTA: [
-      "Café da manhã: kefir (150 ml), creme de aveia com frutas vermelhas (600 g), cuscuz integral de milho (80 g), laranja-bahia (130 g), nozes (15 g)",
-      "Lanche da manhã: queijo cottage sem sal (80 g), pão integral 100% (120 g), morango (100 g)",
-      "Almoço: frango grelhado (150 g), mandioca cozida (porção), aspargo (100 g), alcachofra (100 g), arroz integral (211.6 g), sementes de abóbora (20 g)",
-      "Lanche da tarde: whey protein sem sabor (25 g), torrada integral (60 g), amêndoas (15 g)",
-      "Jantar: grão-de-bico (160 g), brócolis (120 g), espinafre (porção), cevada cozida (porção), tahine (7.5 g), azeite de oliva (0.75 c.s.)"
-    ],
-    SEXTA: [
-      "Café da manhã: kefir (150 ml), farinha de grão-de-bico em panquecas (200 g), aveia (60 g), kiwi (100 g), chia (15 g)",
-      "Lanche da manhã: clara de ovo (120 g), granola sem açúcar e sementes (30 g), morango (100 g)",
-      "Almoço: ovo cozido (2 un), painço cozido (200 g), berinjela (120 g), alcachofra (100 g), cevada cozida (porção), coco em lascas (15 g)",
-      "Lanche da tarde: homus (105 g), pão de espelta integral (80 g), goiaba (200 g)",
-      "Jantar: carne magra (150 g), polenta integral (porção), broto de alfafa (40 g), alcachofra (100 g), milho verde (porção), mix de sementes (20 g)"
-    ],
-    SÁBADO: [
-      "Café da manhã: kefir (150 ml), panqueca integral de banana verde (360 g), creme de aveia com frutas vermelhas (200 g), amora (100 g), nozes (15 g)",
-      "Lanche da manhã: iogurte (150 g), pão integral 100% (120 g), framboesa (80 g)",
-      "Almoço: frango grelhado (150 g), quinoa (240 g), cebolinha (10 g), alcachofra (100 g), salada completa (200 g), arroz integral (211.6 g)",
-      "Lanche da tarde: leite vegetal (200 ml), torrada integral (60 g), framboesa (80 g)",
-      "Jantar: filé mignon (120 g), sorgo cozido (porção), chuchu (120 g), alcachofra (100 g), cevada cozida (porção), semente de girassol (12.5 g)"
-    ],
-    DOMINGO: [
-      "Café da manhã: kefir (150 ml), quinoa em flocos (30 g), chia (10 g), aveia (22.5 g), morango (100 g)",
-      "Lanche da manhã: ovo (2 un), granola sem açúcar e sementes (90 g), maçã com casca (120 g)",
-      "Almoço: peixe assado (90 g), trigo sarraceno cozido (175 g), cogumelos (120 g), alcachofra (100 g), arroz integral (140 g), sementes de abóbora (15 g)",
-      "Lanche da tarde: proteína em pó sem açúcar (25 g), pão de espelta integral (40 g), melão cantaloupe (150 g)",
-      "Jantar: lagarto cozido (120 g), arroz negro (140 g), couve manteiga (porção), alcachofra (100 g), cevada cozida (porção), tahine (20 g)"
-    ]
+  // Gerar dias do mês para o calendário
+  const generateCalendarDays = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const days = [];
+    
+    // Dias vazios do início do mês
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    
+    // Dias do mês
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(day);
+    }
+    
+    return days;
   };
 
+  const calendarDays = generateCalendarDays();
+
+  // Função para identificar a próxima refeição baseada na hora atual
+  const getNextMeal = () => {
+    const mealTimes = [
+      { id: 'cafe', hour: 8, name: 'Café da Manhã', time: '08:00' },
+      { id: 'almoco', hour: 12, name: 'Almoço', time: '12:00' },
+      { id: 'lanches', hour: 15, name: 'Lanche da Tarde', time: '15:00' },
+      { id: 'jantar', hour: 19, name: 'Jantar', time: '19:00' }
+    ];
+
+    // Se for antes das 8h, próxima refeição é café da manhã
+    if (currentHour < 8) {
+      return mealTimes[0];
+    }
+    
+    // Se for entre 8h e 12h, próxima refeição é almoço
+    if (currentHour >= 8 && currentHour < 12) {
+      return mealTimes[1];
+    }
+    
+    // Se for entre 12h e 15h, próxima refeição é lanche da tarde
+    if (currentHour >= 12 && currentHour < 15) {
+      return mealTimes[2];
+    }
+    
+    // Se for entre 15h e 19h, próxima refeição é jantar
+    if (currentHour >= 15 && currentHour < 19) {
+      return mealTimes[3];
+    }
+    
+    // Se for após 19h, próxima refeição é café da manhã do próximo dia
+    return mealTimes[0];
+  };
+
+  const nextMeal = getNextMeal();
+
   return (
-    <div className="min-h-screen bg-medical-bg p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-[#3B5675]">
-            Dieta Personalizada
-          </h1>
-          <p className="text-muted-foreground">
-            Análise e geração expecífica dos seus dados
-          </p>
-        </div>
-        <div className="flex justify-center">
-          <Card className="bg-white/70 backdrop-blur-sm max-w-2xl w-full">
-            <CardHeader>
-              <CardTitle className="text-[#3B5675]">Geração de Plano</CardTitle>
-              <CardDescription>
-                Clique no botão abaixo para gerar sua dieta personalizada com base nas suas preferências e objetivos.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-center">
-                <Button size="lg" onClick={handleGerarDieta}>Gerar Dieta</Button>
+    <div className="min-h-screen bg-medical-bg">
+      {/* Cabeçalho */}
+      <div className="relative py-8">
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Título e Subtítulo */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-[#3B5675] mb-2" style={{ fontSize: '36px' }}>
+              Planejador de Dieta
+            </h1>
+            <p className="text-muted-foreground" style={{ fontSize: '16px' }}>
+              Organize suas refeições e mantenha uma alimentação saudável
+            </p>
+          </div>
+
+          {/* Ícone de Calendário - Canto Superior Direito */}
+          <div className="absolute top-8 right-6">
+            <div className="flex items-center gap-2 bg-gradient-card border-2 border-[#3B5675] rounded-lg px-3 py-2 shadow-lg">
+              <Calendar className="w-6 h-6 text-[#3B5675]" />
+              <div className="text-sm">
+                <div className="font-medium text-[#3B5675] capitalize">{currentMonth}</div>
+                <div className="text-[#3B5675] font-bold">{currentDay}</div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Corpo Principal - Esquerda */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Seção de Informações do Dia */}
+            <div className="bg-gradient-card rounded-lg p-5 mb-8 shadow-lg border-0">
+              {/* Média Glicêmica */}
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-[#3B5675] mb-3">Média Glicêmica</h3>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="h-3 rounded-full transition-all duration-300"
+                    style={{ width: '100%', background: 'linear-gradient(135deg, #3B5675 0%, #CAE5F2 100%)' }}
+                  ></div>
+                </div>
+                <p className="text-sm text-[#3B5675] mt-2">80 mg/dL</p>
+              </div>
+
+              {/* Refeições e Próxima Refeição */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Refeições */}
+                <div>
+                  <h3 className="text-lg font-medium text-[#3B5675] mb-3">Refeições</h3>
+                  <div className="space-y-2">
+                    {refeicoes.map((refeicao) => {
+                      const IconComponent = refeicao.icone;
+                      return (
+                        <div key={refeicao.id} className="flex items-center gap-2">
+                          <IconComponent className="w-5 h-5 text-[#3B5675]" />
+                          <span className="text-[#3B5675] font-medium">{refeicao.nome}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Próxima Refeição */}
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-[#3B5675] mb-3">Próxima Refeição</h3>
+                  <div className="bg-gradient-card rounded-lg p-4 border border-[#3B5675] shadow-lg">
+                    <p className="text-2xl font-bold text-[#3B5675]">{nextMeal.time}</p>
+                    <p className="text-[#3B5675] font-medium">{nextMeal.name}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Plano de Refeições do Dia */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-[#3B5675]">Plano de Refeições do Dia</h2>
+              
+              {refeicoes.map((refeicao) => {
+                const IconComponent = refeicao.icone;
+                return (
+                  <div key={refeicao.id} className="bg-gradient-card rounded-lg p-5 shadow-lg border-0">
+                    <div className="flex items-center gap-3 mb-4">
+                      <IconComponent className="w-6 h-6 text-[#3B5675]" />
+                      <h3 className="text-xl font-bold text-[#3B5675]">{refeicao.nome}</h3>
+                      <span className="text-[#CAE5F2] font-medium">({refeicao.horario})</span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {refeicao.itens.map((item, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            id={`${refeicao.id}-${index}`}
+                            checked={consumedItems.has(`${refeicao.id}-${index}`)}
+                            onChange={() => toggleConsumed(`${refeicao.id}-${index}`)}
+                            className="w-4 h-4 text-[#3B5675] bg-white border-2 border-[#3B5675] rounded focus:ring-[#3B5675] focus:ring-2"
+                          />
+                          <label 
+                            htmlFor={`${refeicao.id}-${index}`}
+                            className={`text-[#3B5675] cursor-pointer transition-colors ${
+                              consumedItems.has(`${refeicao.id}-${index}`) 
+                                ? 'line-through text-[#CAE5F2]' 
+                                : ''
+                            }`}
+                            style={{ fontSize: '16px' }}
+                          >
+                            {item}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Calendário - Direita */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-card rounded-lg p-5 sticky top-6 shadow-lg border-0">
+              <h3 className="text-xl font-bold text-[#3B5675] mb-4 text-center">
+                {currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} {currentDate.getFullYear()}
+              </h3>
+              
+              {/* Cabeçalho dos dias da semana */}
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
+                  <div key={day} className="text-center text-sm font-medium text-[#3B5675] p-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Dias do calendário */}
+              <div className="grid grid-cols-7 gap-1">
+                {calendarDays.map((day, index) => (
+                  <div
+                    key={index}
+                    className={`text-center p-2 rounded-lg transition-colors ${
+                      day === null
+                        ? 'invisible'
+                        : day === currentDay
+                        ? 'text-white font-bold'
+                        : 'text-[#3B5675] hover:bg-[#CAE5F2]/20 cursor-pointer'
+                    }`}
+                    style={{
+                      minHeight: '40px',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: day === currentDay ? 'linear-gradient(135deg, #3B5675 0%, #CAE5F2 100%)' : 'transparent'
+                    }}
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {dietaGerada && (
-          <div className="mt-8">
-            <Card className="bg-white/70 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-[#3B5675] text-center">
-                  Com base nas suas características foi gerada a seguinte dieta:
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {diasDaSemana.map((dia, index) => (
-                    <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 last:border-b-0">
-                      <AccordionTrigger className="text-xl font-bold text-[#3B5675] hover:no-underline hover:text-[#3B5675] py-4">
-                        {dia}
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-4">
-                        <div className="space-y-2">
-                          {dietaSemanal[dia as keyof typeof dietaSemanal].map((refeicao, refeicaoIndex) => (
-                            <div key={refeicaoIndex} className="text-sm text-muted-foreground">
-                              • {refeicao}
-                            </div>
-                          ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-                
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h4 className="text-lg font-semibold text-[#3B5675] mb-3">Dicas adicionais:</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Priorizar fibras: chia, linhaça, vegetais crus; Evitar farinhas refinadas e açúcares simples
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {/* Botão de Voltar */}
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={() => navigate('/')}
+            className="hover:opacity-90 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl"
+            style={{
+              background: 'linear-gradient(135deg, #3B5675 0%, #CAE5F2 100%)'
+            }}
+          >
+            Retornar ao menu
+          </Button>
+        </div>
       </div>
     </div>
   );
