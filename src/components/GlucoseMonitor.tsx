@@ -14,20 +14,20 @@ interface GlucoseReading {
 }
 
 const GlucoseMonitor = () => {
-  const [currentGlucose, setCurrentGlucose] = useState<number>(125);
+  const [currentGlucose, setCurrentGlucose] = useState<number>(95);
   const navigate = useNavigate();
   const [readings, setReadings] = useState<GlucoseReading[]>([
-    { id: 1, value: 142, timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), time: '4h atrás' },
-    { id: 2, value: 138, timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), time: '3h atrás' },
-    { id: 3, value: 155, timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), time: '2h atrás' },
-    { id: 4, value: 143, timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000), time: '1h atrás' },
-    { id: 5, value: 125, timestamp: new Date(), time: 'agora' }
+    { id: 1, value: 88, timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), time: '4h atrás' },
+    { id: 2, value: 92, timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), time: '3h atrás' },
+    { id: 3, value: 105, timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), time: '2h atrás' },
+    { id: 4, value: 98, timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000), time: '1h atrás' },
+    { id: 5, value: 95, timestamp: new Date(), time: 'agora' }
   ]);
   const [lastMeasurement, setLastMeasurement] = useState<Date>(new Date());
 
   const measureGlucose = () => {
-    // Gera um valor realista de glicose (80-200 mg/dL)
-    const newValue = Math.floor(Math.random() * 120) + 80;
+    // Gera um valor realista de glicose (70-140 mg/dL)
+    const newValue = Math.floor(Math.random() * 70) + 70;
     const newTimestamp = new Date();
     const newReading: GlucoseReading = {
       id: Date.now(),
@@ -52,8 +52,8 @@ const GlucoseMonitor = () => {
 
   const getGlucoseStatus = (value: number) => {
     if (value < 70) return { status: 'Hipoglicemia', color: 'text-danger', bgColor: 'bg-danger/10' };
-    if (value > 180) return { status: 'Hiperglicemia', color: 'text-danger', bgColor: 'bg-danger/10' };
-    if (value > 140) return { status: 'Elevada', color: 'text-warning', bgColor: 'bg-warning/10' };
+    if (value >= 126) return { status: 'Hiperglicemia', color: 'text-danger', bgColor: 'bg-danger/10' };
+    if (value >= 100) return { status: 'Glicose Alta', color: 'text-warning', bgColor: 'bg-warning/10' };
     return { status: 'Normal', color: 'text-success', bgColor: 'bg-success/10' };
   };
 
@@ -62,12 +62,12 @@ const GlucoseMonitor = () => {
   };
 
   const calculateTimeInRange = () => {
-    const inRange = readings.filter(reading => reading.value >= 70 && reading.value <= 180).length;
+    const inRange = readings.filter(reading => reading.value >= 70 && reading.value < 100).length;
     return Math.round((inRange / readings.length) * 100);
   };
 
   const hasHighRiskReadings = () => {
-    return readings.some(reading => reading.value < 70 || reading.value > 200);
+    return readings.some(reading => reading.value < 70 || reading.value >= 126);
   };
 
   const predictionData = [
@@ -80,23 +80,23 @@ const GlucoseMonitor = () => {
   ];
 
   // Helper de risco
-  const isRiskValue = (v: number) => v >= 180 || v <= 70 || (v > 170 && v < 180) || (v >= 70 && v < 80);
+  const isRiskValue = (v: number) => v >= 126 || v < 70 || (v >= 100 && v < 126) || (v >= 70 && v < 80);
   // Série apenas para destacar os trechos de risco (sobreposição)
   const predictionRiskOverlay = predictionData.map(p => ({ time: p.time, glucose: isRiskValue(p.glucose) ? p.glucose : null }));
 
   // Detecção de risco para a previsão (hipo/hiper ou proximidade de 10 mg/dL)
-  const hyperOut = predictionData.some(p => p.glucose >= 180);
-  const hypoOut = predictionData.some(p => p.glucose <= 70);
-  const hyperNear = predictionData.some(p => p.glucose > 170 && p.glucose < 180);
+  const hyperOut = predictionData.some(p => p.glucose >= 126);
+  const hypoOut = predictionData.some(p => p.glucose < 70);
+  const hyperNear = predictionData.some(p => p.glucose >= 100 && p.glucose < 126);
   const hypoNear = predictionData.some(p => p.glucose >= 70 && p.glucose < 80);
   const hasAnyWarning = hyperOut || hypoOut || hyperNear || hypoNear;
 
   const warningMessage = (() => {
-    if (hyperOut && hypoOut) return 'Alerta: previsão em zonas de hipo e hiperglicemia.';
-    if (hyperOut) return 'Alerta: previsão em zona de hiperglicemia.';
+    if (hyperOut && hypoOut) return 'Alerta: previsão em zonas de hipoglicemia e glicose muito alta.';
+    if (hyperOut) return 'Alerta: previsão em zona de glicose muito alta.';
     if (hypoOut) return 'Alerta: previsão em zona de hipoglicemia.';
-    if (hyperNear && hypoNear) return 'Atenção: previsão próxima das zonas de hipo e hiperglicemia.';
-    if (hyperNear) return 'Atenção: previsão próxima da zona de hiperglicemia.';
+    if (hyperNear && hypoNear) return 'Atenção: previsão próxima das zonas de hipoglicemia e glicose alta.';
+    if (hyperNear) return 'Atenção: previsão próxima da zona de glicose alta.';
     if (hypoNear) return 'Atenção: previsão próxima da zona de hipoglicemia.';
     return '';
   })();
@@ -104,9 +104,9 @@ const GlucoseMonitor = () => {
   const glucoseStatus = getGlucoseStatus(currentGlucose);
   // Texto curto para aviso inline ao lado do status atual
   const inlineWarningText = hyperOut
-    ? 'Risco de Hipercglicemia'
-    : hypoOut
     ? 'Risco de Hiperglicemia'
+    : hypoOut
+    ? 'Risco de Hipoglicemia'
     : 'Previsão em risco';
 
   // Dot único com cor condicional
@@ -214,7 +214,7 @@ const GlucoseMonitor = () => {
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 Tendência de Glicose (Últimas 5 Medições)
-                {readings.some(r => r.value > 180 || r.value < 70) && (
+                {readings.some(r => r.value >= 126 || r.value < 70) && (
                   <AlertTriangle className="h-4 w-4 text-warning ml-auto" />
                 )}
               </CardTitle>
@@ -224,7 +224,7 @@ const GlucoseMonitor = () => {
                 <AreaChart data={readings}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis dataKey="time" stroke="#64748b" />
-                  <YAxis domain={[60, 220]} stroke="#64748b" />
+                  <YAxis domain={[60, 150]} stroke="#64748b" />
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: 'white', 
@@ -233,7 +233,8 @@ const GlucoseMonitor = () => {
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                   />
-                  <ReferenceLine y={180} stroke="#3B5675" strokeDasharray="5 5" label="Hiperglicemia" />
+                  <ReferenceLine y={126} stroke="#3B5675" strokeDasharray="5 5" label="Hiperglicemia" />
+                  <ReferenceLine y={100} stroke="#3B5675" strokeDasharray="5 5" label="Glicose Alta" />
                   <ReferenceLine y={70} stroke="#3B5675" strokeDasharray="5 5" label="Hipoglicemia" />
                   <Area 
                     type="monotone" 
@@ -247,8 +248,9 @@ const GlucoseMonitor = () => {
                 </AreaChart>
               </ResponsiveContainer>
               <div className="mt-4 space-y-1 text-sm text-muted-foreground">
-                <p>Faixa Normal (70-180 mg/dL)</p>
-                <p>Hiperglicemia (&gt; 180 mg/dL)</p>
+                <p>Normal (&lt; 100 mg/dL)</p>
+                <p>Glicose Alta (100-125 mg/dL)</p>
+                <p>Hiperglicemia (≥ 126 mg/dL)</p>
                 <p>Hipoglicemia (&lt; 70 mg/dL)</p>
               </div>
             </CardContent>
@@ -267,9 +269,10 @@ const GlucoseMonitor = () => {
                 <AreaChart data={predictionData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis dataKey="time" stroke="#64748b" />
-                  <YAxis domain={[60, 220]} stroke="#64748b" />
+                  <YAxis domain={[60, 150]} stroke="#64748b" />
                   <Tooltip content={<GlucosePredictionTooltip />} />
-                  <ReferenceLine y={180} stroke="#3B5675" strokeDasharray="5 5" label="Hiperglicemia" />
+                  <ReferenceLine y={126} stroke="#3B5675" strokeDasharray="5 5" label="Hiperglicemia" />
+                  <ReferenceLine y={100} stroke="#3B5675" strokeDasharray="5 5" label="Glicose Alta" />
                   <ReferenceLine y={70} stroke="#3B5675" strokeDasharray="5 5" label="Hipoglicemia" />
                   {/* Linha/área base contínua */}
                   <Area 
